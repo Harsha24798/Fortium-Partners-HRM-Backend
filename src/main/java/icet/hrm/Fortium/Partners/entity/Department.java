@@ -9,24 +9,20 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "employees", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+@Table(name = "departments")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class Employee {
+@AllArgsConstructor
+public class Department {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @Column(nullable = false)
-    private String department;
+    private String description;
 
     @Column(nullable = false, updatable = false)
     @CreationTimestamp

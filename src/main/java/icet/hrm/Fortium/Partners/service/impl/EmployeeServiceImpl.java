@@ -1,6 +1,7 @@
 package icet.hrm.Fortium.Partners.service.impl;
 
 import icet.hrm.Fortium.Partners.entity.Employee;
+import icet.hrm.Fortium.Partners.model.DepartmentDto;
 import icet.hrm.Fortium.Partners.model.EmployeeDto;
 import icet.hrm.Fortium.Partners.repository.EmployeeRepository;
 import icet.hrm.Fortium.Partners.service.EmployeeService;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,15 +39,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     public List<EmployeeDto> getAllEmployees() {
         return employeeRepository.findAll()
                 .stream()
-                .map(employee -> modelMapper.map(employee, EmployeeDto.class))
-                .collect(Collectors.toList());
+                .map(employee -> modelMapper.map(employee, EmployeeDto.class)).toList();
     }
 
     @Override
     public ResponseEntity<?> updateEmployee(Long id, EmployeeDto employeeDto) {
         Optional<Employee> optionalEmployee = employeeRepository.findById(id);
         if (optionalEmployee.isEmpty()) {
-            return ResponseEntity.badRequest().body("Error: Employee not found!");
+            return ResponseEntity.badRequest().body("Error: Employee not found!! ID : " + id);
         }
 
         Employee existing = optionalEmployee.get();
@@ -70,9 +69,20 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public ResponseEntity<?> deleteEmployee(Long id) {
         if (!employeeRepository.existsById(id)) {
-            return ResponseEntity.badRequest().body("Error: Employee not found!");
+            return ResponseEntity.badRequest().body("Error: Employee not found! ID: " + id);
         }
         employeeRepository.deleteById(id);
         return ResponseEntity.ok("Employee deleted successfully!");
+    }
+
+    @Override
+    public ResponseEntity<?> getDepartmentById(Long id) {
+        Optional<Employee> optional = employeeRepository.findById(id);
+        if (optional.isEmpty()) {
+            return ResponseEntity.badRequest().body("Error: Employee not found!");
+        }
+
+        DepartmentDto dto = modelMapper.map(optional.get(), DepartmentDto.class);
+        return ResponseEntity.ok(dto);
     }
 }

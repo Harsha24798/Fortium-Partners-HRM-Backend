@@ -21,6 +21,11 @@ public class EmployeeController {
         return employeeService.createEmployee(employee);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getEmployeeById(@PathVariable Long id) {
+        return employeeService.getDepartmentById(id);
+    }
+
     @GetMapping
     public ResponseEntity<List<EmployeeDto>> getAllEmployees() {
         return ResponseEntity.ok(employeeService.getAllEmployees());
